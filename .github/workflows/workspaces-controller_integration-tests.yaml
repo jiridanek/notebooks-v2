@@ -47,18 +47,18 @@ jobs:
           cd workspaces/controller/config
           kubectl create namespace kubeflow
 
-          export CURRENT_IMAGE="docker.io/kubeflownotebookswg/${IMG}"
-          export PR_IMAGE="${IMG}:${TAG}"
-
           # escape "." in the image names, as it is a special characters in sed
           export CURRENT_IMAGE=$(echo "$CURRENT_IMAGE" | sed 's|\.|\\.|g')
           export PR_IMAGE=$(echo "$PR_IMAGE" | sed 's|\.|\\.|g')
 
-          kustomize build overlays/kubeflow \
+          kustomize build config/default \
             | sed "s|${CURRENT_IMAGE}:[a-zA-Z0-9_.-]*|${PR_IMAGE}|g" \
             | kubectl apply -f -
 
           kubectl wait pods -n kubeflow -l app=workspace-controller --for=condition=Ready --timeout=300s
+        env:
+          CURRENT_IMAGE: "controller:latest"
+          PR_IMAGE: "pepa:zdepa"
 #
 #      - name: Load Images into KinD Cluster
 #      run: |
