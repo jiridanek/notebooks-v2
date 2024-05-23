@@ -34,6 +34,7 @@ jobs:
       - name: Deploy image bundle into k0s
         run: |
           sudo docker image save pepa:zdepa -o /mnt/k0s/images/bundle_file
+          docker container restart k0s
 
       - name: Wait for k0s
         run: |
