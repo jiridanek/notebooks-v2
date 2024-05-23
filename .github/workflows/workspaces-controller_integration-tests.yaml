@@ -24,11 +24,10 @@ jobs:
 #      - uses: docker/setup-buildx-action@v3
 
       - name: Build Notebook Controller Image
-        run: |
-          cd workspaces/controller/
-          make docker-build
+        run: make docker-build
         env:
           IMG: "pepa:zdepa"
+        workdir: workspaces/controller
 
       # https://docs.k0sproject.io/v1.30.0+k0s.0/airgap-install/#1-create-your-own-image-bundle-optional
       - name: Deploy image bundle into k0s
@@ -52,8 +51,6 @@ jobs:
 
       - name: Build & Apply manifests
         run: |
-          cd workspaces/controller/config
-
           # escape "." in the image names, as it is a special characters in sed
           export CURRENT_IMAGE=$(echo "$CURRENT_IMAGE" | sed 's|\.|\\.|g')
           export PR_IMAGE=$(echo "$PR_IMAGE" | sed 's|\.|\\.|g')
@@ -71,6 +68,7 @@ jobs:
         env:
           CURRENT_IMAGE: "controller"
           PR_IMAGE: "pepa:zdepa"
+        workdir: workspaces/controller/config
 
 #      - name: Load Images into KinD Cluster
 #      run: |
