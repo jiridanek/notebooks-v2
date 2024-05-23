@@ -50,7 +50,6 @@ jobs:
       - name: Build & Apply manifests
         run: |
           cd workspaces/controller/config
-          kubectl create namespace kubeflow
 
           # escape "." in the image names, as it is a special characters in sed
           export CURRENT_IMAGE=$(echo "$CURRENT_IMAGE" | sed 's|\.|\\.|g')
@@ -60,7 +59,7 @@ jobs:
             | sed "s|${CURRENT_IMAGE}:[a-zA-Z0-9_.-]*|${PR_IMAGE}|g" \
             | kubectl apply -f -
 
-          kubectl wait pods -n kubeflow -l app=workspace-controller --for=condition=Ready --timeout=300s
+          kubectl wait pods -n workspace-controller-system -l app=workspace-controller --for=condition=Ready --timeout=300s
         env:
           CURRENT_IMAGE: "controller:latest"
           PR_IMAGE: "pepa:zdepa"
