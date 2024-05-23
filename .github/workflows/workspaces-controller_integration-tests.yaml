@@ -59,12 +59,17 @@ jobs:
             | sed "s|${CURRENT_IMAGE}:[a-zA-Z0-9_.-]*|${PR_IMAGE}|g" \
             | kubectl apply -f -
 
-          # kubectl wait pods -n workspace-controller-system -l control-plane=workspace-controller --for=condition=Ready --timeout=300s
-          until false; do
+          thence=$(date +%s)
+          until kubectl wait pods -n workspace-controller-system -l control-plane=workspace-controller --for=condition=Ready --timeout=10s; do
+            # print some helpful status in case the pod is not coming up
             kubectl describe deployments -n workspace-controller-system
             kubectl describe pods -n workspace-controller-system
-            sleep 5;
+
+            now=$(date +%s)
+            duration=$(( $now - $thence ))
+            if [[ $duration > 300 ]]; then exit 1; fi
           done
+          kubectl describe pods -n workspace-controller-system
         env:
           CURRENT_IMAGE: "controller"
           PR_IMAGE: "pepa:zdepa"
