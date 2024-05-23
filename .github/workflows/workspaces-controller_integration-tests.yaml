@@ -60,14 +60,14 @@ jobs:
             | kubectl apply -f -
 
           thence=$(date +%s)
-          until kubectl wait pods -n workspace-controller-system -l control-plane=workspace-controller --for=condition=Ready --timeout=10s; do
+          until false; do
             # print some helpful status in case the pod is not coming up
             kubectl describe deployments -n workspace-controller-system
             kubectl describe pods -n workspace-controller-system
 
             now=$(date +%s)
             duration=$(( $now - $thence ))
-            if [[ $duration > 300 ]]; then exit 1; fi
+            if (( $duration > 300 )); then exit 1; fi
           done
           kubectl describe pods -n workspace-controller-system
         env:
