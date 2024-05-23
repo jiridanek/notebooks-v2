@@ -59,7 +59,11 @@ jobs:
             | sed "s|${CURRENT_IMAGE}:[a-zA-Z0-9_.-]*|${PR_IMAGE}|g" \
             | kubectl apply -f -
 
-          kubectl wait pods -n workspace-controller-system -l control-plane=workspace-controller --for=condition=Ready --timeout=300s
+          # kubectl wait pods -n workspace-controller-system -l control-plane=workspace-controller --for=condition=Ready --timeout=300s
+          until false; do
+            kubectl describe pods -n workspace-controller-system
+            sleep 5;
+          done
         env:
           CURRENT_IMAGE: "controller:latest"
           PR_IMAGE: "pepa:zdepa"
