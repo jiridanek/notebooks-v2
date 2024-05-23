@@ -31,7 +31,7 @@ jobs:
           IMG: "pepa:zdepa"
 
       - name: Wait for k0s
-      - run: |
+        run: |
           # wait for kubeconfig
           docker exec k0s sh -c 'until [ -f /var/lib/k0s/pki/admin.conf ]; do sleep 1; done'
           sleep 1
