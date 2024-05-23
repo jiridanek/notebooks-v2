@@ -17,7 +17,7 @@ jobs:
 
       # https://docs.k0sproject.io/v0.12.1/k0s-in-docker/#installation-steps
       - name: Start k0s
-        run: docker run -d --name k0s --hostname k0s --privileged -v /mnt/k0s:/var/lib/k0s -p 6443:6443 docker.io/k0sproject/k0s:latest
+        run: docker run -d --name k0s --hostname k0s --privileged -v /var/lib/k0s -p 6443:6443 docker.io/k0sproject/k0s:latest
 
       - uses: actions/checkout@v4
 
