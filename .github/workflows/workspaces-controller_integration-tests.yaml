@@ -77,6 +77,10 @@ jobs:
           PR_IMAGE: "pepa:zdepa"
         working-directory: workspaces/controller/config
 
+      - name: Print pod logs
+        if: "${{ ! cancelled() }}"
+        run: kubectl logs -l control-plane=controller-manager -n workspace-controller-system
+
 #      - name: Load Images into KinD Cluster
 #      run: |
 #        kind load docker-image "${IMG}:${TAG}"
