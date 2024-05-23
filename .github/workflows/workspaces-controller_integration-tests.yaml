@@ -69,7 +69,7 @@ jobs:
             sleep 5;
           done
         env:
-          CURRENT_IMAGE: "controller:latest"
+          CURRENT_IMAGE: "controller"
           PR_IMAGE: "pepa:zdepa"
 
 #      - name: Load Images into KinD Cluster
