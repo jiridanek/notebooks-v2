@@ -47,6 +47,9 @@ jobs:
             sleep 3
           done
 
+          # untaint master
+          kubectl taint nodes --all node-role.kubernetes.io/master:NoSchedule-
+
       - name: Build & Apply manifests
         run: |
           cd workspaces/controller/config
