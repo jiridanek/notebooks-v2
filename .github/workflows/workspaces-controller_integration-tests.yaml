@@ -30,6 +30,11 @@ jobs:
         env:
           IMG: "pepa:zdepa"
 
+      # https://docs.k0sproject.io/v1.30.0+k0s.0/airgap-install/#1-create-your-own-image-bundle-optional
+      - name: Deploy image bundle into k0s
+        run: |
+          docker image save pepa:zdepa -o /mnt/k0s/images/bundle_file
+
       - name: Wait for k0s
         run: |
           # wait for kubeconfig
