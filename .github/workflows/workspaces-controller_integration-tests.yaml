@@ -61,6 +61,7 @@ jobs:
 
           # kubectl wait pods -n workspace-controller-system -l control-plane=workspace-controller --for=condition=Ready --timeout=300s
           until false; do
+            kubectl describe deployments -n workspace-controller-system
             kubectl describe pods -n workspace-controller-system
             sleep 5;
           done
