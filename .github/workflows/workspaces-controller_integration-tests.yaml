@@ -27,7 +27,7 @@ jobs:
         run: make docker-build
         env:
           IMG: "pepa:zdepa"
-        workdir: workspaces/controller
+        working-directory: workspaces/controller
 
       # https://docs.k0sproject.io/v1.30.0+k0s.0/airgap-install/#1-create-your-own-image-bundle-optional
       - name: Deploy image bundle into k0s
@@ -68,7 +68,7 @@ jobs:
         env:
           CURRENT_IMAGE: "controller"
           PR_IMAGE: "pepa:zdepa"
-        workdir: workspaces/controller/config
+        working-directory: workspaces/controller/config
 
 #      - name: Load Images into KinD Cluster
 #      run: |
