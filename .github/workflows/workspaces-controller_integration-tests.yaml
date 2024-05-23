@@ -39,12 +39,11 @@ jobs:
         run: |
           # wait for kubeconfig
           docker exec k0s sh -c 'until [ -f /var/lib/k0s/pki/admin.conf ]; do sleep 1; done'
-          sleep 1
 
           mkdir -p $HOME/.kube
           docker cp k0s:/var/lib/k0s/pki/admin.conf $HOME/.kube/config
           until kubectl wait --for=condition=Ready nodes --all; do
-            sleep 7
+            sleep 3
           done
 
       - name: Build & Apply manifests
