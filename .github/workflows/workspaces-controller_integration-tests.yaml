@@ -25,7 +25,7 @@ jobs:
 
       - name: Build Notebook Controller Image
         run: |
-          cd workflows/controller/
+          cd workspaces/controller/
           make docker-build
         env:
           IMG: "pepa:zdepa"
