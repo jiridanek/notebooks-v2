@@ -73,9 +73,8 @@ jobs:
           done
           kubectl describe pods -n workspace-controller-system
         env:
-          CURRENT_IMAGE: "controller"
-          PR_IMAGE: "pepa:zdepa"
-        working-directory: workspaces/controller/config
+          IMG: "controller"
+        working-directory: workspaces/controller
 
       - name: Print pod logs
         if: "${{ ! cancelled() }}"
