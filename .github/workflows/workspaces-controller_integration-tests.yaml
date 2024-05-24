@@ -28,13 +28,6 @@ jobs:
           docker run -d --name k0s --hostname k0s --privileged -v /mnt/k0s:/var/lib/k0s -p 6443:6443 --cgroupns=host \
             docker.io/k0sproject/k0s:v1.30.0-k0s.0 -- k0s controller --enable-worker
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version-file: workspaces/controller/go.mod
-          check-latest: true
-          cache-dependency-path: workspaces/controller/go.sum
-
       - name: Build Notebook Controller Image
         run: make docker-build
         env:
@@ -67,7 +60,8 @@ jobs:
 
       - name: Build & Apply manifests
         run: |
-          make deploy
+          # don't try to rebuild manifests before deploy
+          make --assume-old=manifests deploy
 
           # wait for controller pod to come up, print `kubectl describe` to help diagnose problems
           thence=$(date +%s)
