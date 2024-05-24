@@ -17,7 +17,7 @@ jobs:
 
       # https://docs.k0sproject.io/v1.30.0+k0s.0/k0s-in-docker/#start-k0s
       - name: Start k0s
-        run: docker run -d --name k0s --hostname k0s --privileged -v /mnt/k0s:/var/lib/k0s -p 6443:6443 --cgroupns=host docker.io/k0sproject/k0s:v1.30.0-k0s.0 -- k0s controller --enable-worker
+        run: docker run -d --name k0s --hostname k0s --privileged -v /mnt/k0s:/var/lib/k0s -p 6443:6443 --cgroupns=host docker.io/k0sproject/k0s:v1.30.0-k0s.0 -- k0s controller --single --enable-worker
 
       - uses: actions/checkout@v4
 
@@ -33,7 +33,10 @@ jobs:
       - name: Deploy image bundle into k0s
         run: |
           sudo docker image save pepa:zdepa -o /mnt/k0s/images/bundle_file
-          docker container restart k0s
+          # `docker container restart k0s` would work too; this is faster
+          docker exec k0s k0s ctr \
+            --address /run/k0s/containerd.sock \
+            images import /var/lib/k0s/images/bundle_file
 
       - name: Wait for k0s
         run: |
@@ -45,9 +48,6 @@ jobs:
           until kubectl wait --for=condition=Ready nodes --all; do
             sleep 3
           done
-
-          # untaint master
-          kubectl taint nodes --all node-role.kubernetes.io/master:NoSchedule-
 
       - name: Build & Apply manifests
         run: |
