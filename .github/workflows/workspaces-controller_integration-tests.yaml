@@ -56,7 +56,7 @@ jobs:
 
       - name: Build & Apply manifests
         run: |
-          make install
+          make deploy
 
           # wait for controller pod to come up, print `kubectl describe` to help diagnose problems
           thence=$(date +%s)
