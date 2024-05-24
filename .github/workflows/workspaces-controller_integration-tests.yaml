@@ -18,7 +18,7 @@ jobs:
       # https://docs.k0sproject.io/v1.30.0+k0s.0/k0s-in-docker/#start-k0s
       - name: Start k0s
         run: |
-          docker run -d --name k0s --hostname k0s --privileged -v /mnt/k0s:/var/lib/k0s -p 6443:6443 --cgroupns=host -v /sys/fs/cgroup:/sys/fs/cgroup:rw \
+          docker run -d --name k0s --hostname k0s --privileged -v /mnt/k0s:/var/lib/k0s -p 6443:6443 --cgroupns=host \
             docker.io/k0sproject/k0s:v1.30.0-k0s.0 -- k0s controller --enable-worker
 
       - uses: actions/checkout@v4
