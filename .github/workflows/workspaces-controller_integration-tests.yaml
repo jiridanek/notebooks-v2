@@ -26,7 +26,7 @@ jobs:
       - name: Start k0s
         run: |
           docker run -d --name k0s --hostname k0s --privileged -v /mnt/k0s:/var/lib/k0s -p 6443:6443 --cgroupns=host \
-            docker.io/k0sproject/k0s:v1.30.0-k0s.0 -- k0s controller --enable-worker --disable-components=konnectivity-server
+            docker.io/k0sproject/k0s:v1.30.0-k0s.0 -- k0s controller --no-taints --enable-worker --disable-components=konnectivity-server
 
       - name: Build Notebook Controller Image
         run: make docker-build
@@ -56,11 +56,6 @@ jobs:
           done
 
       - run: kubectl describe nodes
-
-      - name: Untaint master (if needed)
-        run: |
-          # untaint master, workaround for https://github.com/k0sproject/k0s/issues/4272
-          kubectl taint nodes --all node-role.kubernetes.io/master:NoSchedule- || true
 
       - name: Build & Apply manifests
         run: |
