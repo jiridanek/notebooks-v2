@@ -51,7 +51,7 @@ jobs:
             sleep 3
           done
 
-          # untaint master
+          # untaint master, workaround for https://github.com/k0sproject/k0s/issues/4272
           kubectl taint nodes --all node-role.kubernetes.io/master:NoSchedule-
 
       - name: Build & Apply manifests
