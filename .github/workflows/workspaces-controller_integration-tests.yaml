@@ -44,7 +44,7 @@ jobs:
       # https://docs.k0sproject.io/v1.30.0+k0s.0/airgap-install/#1-create-your-own-image-bundle-optional
       - name: Deploy image bundle into k0s
         run: |
-          sudo docker image save pepa:zdepa -o /mnt/k0s/images/bundle_file
+          sudo docker image save "${{ matrix.img }}" -o /mnt/k0s/images/bundle_file
           # `docker container restart k0s` would work too; this is faster
           docker exec k0s k0s ctr \
             --address /run/k0s/containerd.sock \
