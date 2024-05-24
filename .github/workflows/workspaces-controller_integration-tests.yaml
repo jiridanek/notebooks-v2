@@ -73,7 +73,7 @@ jobs:
           done
           kubectl describe pods -n workspace-controller-system
         env:
-          IMG: "controller"
+          IMG: "pepa:zdepa"
         working-directory: workspaces/controller
 
       - name: Print pod logs
