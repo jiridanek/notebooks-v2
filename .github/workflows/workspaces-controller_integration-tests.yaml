@@ -9,6 +9,10 @@ on:
     paths: [ "workspaces/controller/**" ]
     branches: [ "main", "notebooks-v2", "v*-branch" ]
 
+env:
+  # Can be removed to always install the latest stable release.
+  K0S_VERSION: v1.30.0+k0s.0
+
 jobs:
 
   "integration-tests":
@@ -22,11 +26,13 @@ jobs:
 
       - uses: actions/checkout@v4
 
-      # https://docs.k0sproject.io/v1.30.0+k0s.0/k0s-in-docker/#start-k0s
+      # https://docs.k0sproject.io/v1.30.0+k0s.0/install/#install-k0s
       - name: Start k0s
         run: |
-          docker run -d --name k0s --hostname k0s --privileged -v /mnt/k0s:/var/lib/k0s -p 6443:6443 --cgroupns=host \
-            docker.io/k0sproject/k0s:v1.30.0-k0s.0 -- k0s controller --no-taints --enable-worker --disable-components=konnectivity-server
+          curl --proto '=https' --tlsv1.2 -sSf https://get.k0s.sh | sudo sh
+          sudo k0s install controller --no-taints --enable-worker --disable-components=konnectivity-server
+          sudo systemctl daemon-reload
+          sudo k0s start
 
       - name: Build Notebook Controller Image
         run: make docker-build
@@ -37,20 +43,16 @@ jobs:
       # https://docs.k0sproject.io/v1.30.0+k0s.0/airgap-install/#1-create-your-own-image-bundle-optional
       - name: Deploy image bundle into k0s
         run: |
-          sudo docker image save "${{ matrix.img }}" -o /mnt/k0s/images/bundle_file
-          # `docker container restart k0s` would work too; this is faster
-          docker exec k0s k0s ctr \
-            --address /run/k0s/containerd.sock \
-            images import /var/lib/k0s/images/bundle_file
+          sudo mkdir -p /var/lib/k0s/images
+          sudo docker image save "${{ matrix.img }}" -o /var/lib/k0s/images/bundle_file
 
       - name: Wait for k0s readiness
         run: |
-          # wait for kubeconfig
-          docker exec k0s sh -c 'until [ -f /var/lib/k0s/pki/admin.conf ]; do sleep 1; done'
-
           # install kubeconfig
           mkdir -p $HOME/.kube
-          docker cp k0s:/var/lib/k0s/pki/admin.conf $HOME/.kube/config
+          until sudo k0s kubeconfig admin >$HOME/.kube/config; do sleep 1; done
+
+          # wait for nodes
           until kubectl wait --for=condition=Ready nodes --all; do
             sleep 3
           done
