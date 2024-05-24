@@ -79,14 +79,3 @@ jobs:
       - name: Print pod logs
         if: "${{ ! cancelled() }}"
         run: kubectl logs -l control-plane=controller-manager -n workspace-controller-system
-
-#      - name: Load Images into KinD Cluster
-#      run: |
-#        kind load docker-image "${IMG}:${TAG}"
-#
-#- name: Install kustomize
-#  run: ./components/testing/gh-actions/install_kustomize.sh
-#
-#- name: Install Istio
-#  run: ./components/testing/gh-actions/install_istio.sh
-#
