@@ -25,7 +25,7 @@ describe('Application', () => {
     home.visit();
     useFilter('Name', 'My');
     cy.get("[id$='workspaces-table-content']").find('tr').should('have.length', 2);
-    cy.get("[id$='workspaces-table-row-1']").contains('My First Jupyter Notebook');
+    cy.get("[id$='workspaces-table-row-1']").contains('No Such Jupyter Notebook');
     cy.get("[id$='workspaces-table-row-2']").contains('My Second Jupyter Notebook');
   });
 
